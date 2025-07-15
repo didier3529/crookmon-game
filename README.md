@@ -1,6 +1,7 @@
 # crookmon-game
 
-A React single-page application delivering animated card duels with lazy-loaded assets, persistent win-streak tracking, deep-linking, social sharing, analytics, and non-intrusive monetization through interstitial ads and premium skins.
+A framework?agnostic, UI-free JavaScript battle engine for turn-based card duels.  
+Zero runtime dependencies ? ESM & CJS ? Browser, Node.js, Deno & Bun ? React hook integration ? Seedable RNG ? Fully tested
 
 ---
 
@@ -8,239 +9,284 @@ A React single-page application delivering animated card duels with lazy-loaded 
 
 1. [Overview](#overview)  
 2. [Features](#features)  
-3. [Architecture & Flow](#architecture--flow)  
-4. [Installation](#installation)  
-5. [Usage](#usage)  
-6. [Component Reference](#component-reference)  
+3. [Installation](#installation)  
+4. [Quick Start](#quick-start)  
+   - [Headless Usage](#headless-usage)  
+   - [React Hook Usage](#react-hook-usage)  
+5. [API Reference](#api-reference)  
+6. [Components](#components)  
 7. [Dependencies](#dependencies)  
-8. [Project Structure](#project-structure)  
-9. [Contributing](#contributing)  
-10. [License](#license)  
+8. [Development & Build](#development--build)  
+9. [Testing](#testing)  
+10. [Contributing](#contributing)  
+11. [License](#license)  
 
 ---
 
 ## Overview
 
-**Crookmon Quick Clash** is a modular, TypeScript-ready React SPA. Players select squads of animated cards and watch turn-based duels play out with custom animations. The app tracks win streaks in `localStorage`, supports deep-linking to specific matchups, enables social sharing, logs structured analytics, and incorporates monetization via interstitial ads, affiliate banners, and purchasable premium skins. Accessibility (ARIA roles, keyboard nav) and runtime error handling (ErrorBoundary) are built in.
+`crookmon-game` (a.k.a. CrookmonBattleCore) is a pure-function, finite-state battle engine for card duels. It provides:
+
+- Core engine functions (`initializeBattle`, `processTurn`, `generateAIMove`, etc.)  
+- Event subscription API via a lightweight emitter  
+- Seedable RNG for deterministic runs  
+- Dynamic difficulty scaling through win-streaks  
+- A React hook (`useBattleEngine`) for declarative UIs  
+- Zero runtime dependencies; ships as ESM & optional CJS  
+
+Use it headlessly in Node.js, Deno, Bun or in the browser, or integrate seamlessly into React.
 
 ---
 
 ## Features
 
-- React SPA with code-splitting (React.lazy & Suspense)  
-- Persistent win-streak tracking (localStorage)  
-- Deep-linking & shareable URLs  
-- Animated duels (Framer Motion) via a custom duel-logic hook  
-- Global settings: sound & theme (light/dark)  
-- Interstitial ads, affiliate banners & premium skins for monetization  
-- Accessibility compliance (ARIA roles, keyboard navigation)  
-- ErrorBoundary for runtime errors + fallback UI  
-- Structured analytics via `AnalyticsService`  
-- Modular Context + hook-based architecture  
-- Incremental TypeScript migration  
-
----
-
-## Architecture & Flow
-
-1. **Entry**: `index.js` mounts `app.jsx`.  
-2. **Global Setup**: `app.tsx` (inside ErrorBoundary) initializes `AnalyticsService` and context providers (`SettingsContext`, `WinStreakContext`, `DuelContext`).  
-3. **Home**: `Header` + `CardPickerGrid` (lazy-loaded `CardTile`s).  
-4. **Duel Init**: On card selection, `useDuelLogic` and `DuelContext` prepare the `BattleScreen`.  
-5. **Battle**: `BattleScreen` animates turns; `ResultsOverlay` shows outcome & updates win streak.  
-6. **Monetization**: `useInterstitialAd` triggers `InterstitialAdManager`; `AffiliateLinkBanner` displays affiliate links; `PremiumSkinModal` offers skins.  
-7. **Global UI**: `ShareLinkModal`, `SettingsModal`, `Footer`, and `LoadingSpinner` (Suspense fallback).  
-8. **Error Handling**: `ErrorBoundary` catches uncaught errors, logs via `AnalyticsService`, and shows fallback UI.  
+- UI-agnostic battle engine core  
+- Finite State Machine (idle ? selecting ? resolving ? finished)  
+- Pluggable AI move generation  
+- Damage calculation with critical hits & mitigation  
+- Victory evaluation (win/draw)  
+- Win-streak scaling for campaigns  
+- Event subscription API (`on`, `off`, `once`)  
+- React hook integration (`useBattleEngine`)  
+- Seedable RNG for testing & reproducibility  
+- ESM & CJS bundles with JSDoc/TypeScript definitions  
 
 ---
 
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/crookmon-game.git
-cd crookmon-game
-npm install
+npm install crookmon-game
 # or
-yarn install
+yarn add crookmon-game
 ```
 
 ---
 
-## Usage
+## Quick Start
 
-```bash
-# Start development server
-npm start
-# or
-yarn start
+### Headless Usage
 
-# Build for production
-npm run build
-# or
-yarn build
+```js
+import {
+  initializeBattle,
+  processTurn,
+  generateAIMove,
+  evaluateVictory,
+  advanceWinStreak,
+  on,
+  off
+} from 'crookmon-game';
 
-# Run tests (if configured)
-npm test
+// 1. Initialize
+let battle = initializeBattle({
+  playerDeck: [...],
+  aiDeck: [...],
+  seed: 12345
+});
+
+// Subscribe to events
+on('turnProcessed', ({ battleState, action }) => {
+  console.log('Turn processed:', action, battleState);
+});
+
+// 2. Battle loop
+while (!evaluateVictory(battle).finished) {
+  // Player plays (example)
+  battle = processTurn(battle, { type: 'PLAY_CARD', cardId: 'fireball' });
+
+  // AI turn
+  const aiAction = generateAIMove(battle, { difficulty: 'medium' });
+  battle = processTurn(battle, aiAction);
+}
+
+// 3. Evaluate & scale
+const result = evaluateVictory(battle);
+console.log('Result:', result);
+const newHP = advanceWinStreak('player', result);
+console.log('Player HP for next battle:', newHP);
 ```
 
-Open http://localhost:3000 in your browser.  
+### React Hook Usage
+
+```jsx
+import React from 'react';
+import { useBattleEngine } from 'crookmon-game';
+
+function BattleUI({ config }) {
+  const { state, dispatch, subscribe } = useBattleEngine(config);
+
+  React.useEffect(() => {
+    const unsubscribe = subscribe('victory', result => {
+      alert(`Winner: ${result.winner}`);
+    });
+    return unsubscribe;
+  }, [subscribe]);
+
+  if (state.phase === 'idle') {
+    return <button onClick={() => dispatch({ type: 'START' })}>Start Battle</button>;
+  }
+
+  // render cards, HP, logs, etc.
+  return (
+    <div>
+      <h2>Phase: {state.phase}</h2>
+      {/* ... */}
+      <button onClick={() => dispatch({ type: 'PLAY_CARD', cardId: 'waterblast' })}>
+        Play Waterblast
+      </button>
+    </div>
+  );
+}
+```
 
 ---
 
-## Component Reference
+## API Reference
 
-### Context Providers
+```ts
+// Core Functions
+initializeBattle(config: BattleConfig): BattleState
+processTurn(state: BattleState, action: BattleAction): BattleState
+generateAIMove(state: BattleState, options?: AIMoveOptions): BattleAction
+calculateDamage(attacker: Character, defender: Character, move: Move): number
+evaluateVictory(state: BattleState): { finished: boolean; winner?: 'player' | 'ai'; draw?: boolean }
+advanceWinStreak(playerId: string, result: VictoryResult): number
 
-- **SettingsContext** (`settingscontext.tsx`)  
-  Manages sound & theme preferences (persisted via `useLocalStorage`).
+// Event API
+on(event: string, listener: EventListener): void
+off(event: string, listener: EventListener): void
+once(event: string, listener: EventListener): void
 
-- **DuelContext** (`duelcontext.tsx`)  
-  Holds current duel state (player/opponent decks, action sequence).
+// React Hook
+useBattleEngine(config: BattleConfig): {
+  state: BattleState
+  dispatch: (action: BattleAction) => void
+  subscribe: (event: string, listener: EventListener) => Unsubscribe
+}
 
-- **WinStreakContext** (`winstreakcontext.tsx`)  
-  Tracks & persists user win-streak.
+// Utilities
+// (see source for deepClone, merge, randomChoice, etc.)
+```
 
-### Custom Hooks
+Full JSDoc/TypeScript definitions are included in the package.
 
-- **useLocalStorage** (`uselocalstorage.ts`)  
-  Syncs React state with `localStorage`.
+---
 
-- **useQueryParams** (`usequeryparams.ts`)  
-  Parses & sets URL query parameters (deep-linking).
+## Components
 
-- **useDuelLogic** (`useduellogic.ts`)  
-  Precomputes duel turns & outcome; exposes `startDuel`, `playTurn`, `resetDuel`.
+### Core Engine Modules
 
-- **useInterstitialAd** (`useinterstitialad.ts`)  
-  Loads ad SDK, manages display frequency.
+- **initializeBattle.js**  
+  Sets up the initial `BattleState`, FSM & event emitter.
 
-- **useAudioManager** (`useaudiomanager.ts`)  
-  Preloads & plays sound effects (howler.js).
+- **processTurn.js**  
+  Validates & applies a player or AI move, advances FSM, emits events.
 
-### UI Components
+- **generateAIMove.js**  
+  Chooses an AI action based on state, difficulty profile & RNG.
 
-- **Header** (`header.tsx`)  
-  Logo, deep-link input, share & settings buttons, responsive menu.
+- **calculateDamage.js**  
+  Computes damage with critical hits & defense mitigation.
 
-- **Footer** (`footer.tsx`)  
-  Affiliate banner, legal links, version info, theme toggle.
+- **evaluateVictory.js**  
+  Determines if the battle is won, lost or drawn.
 
-- **CardPickerGrid** (`cardpickergrid.tsx`)  
-  Lazy-loaded grid of `CardTile` components for squad selection.
+- **advanceWinStreak.js**  
+  Applies HP scaling based on win-streak progress.
 
-- **CardTile** (`cardtile.tsx`)  
-  Individual card tile with lazy-loaded image & flip animation.
+- **stateMachine.js**  
+  FSM core: defines states & transitions.
 
-- **BattleScreen** (`battlescreen.tsx`)  
-  Runs Framer Motion transitions & attack animations.
+- **eventEmitter.js**  
+  Lightweight emitter: `on`, `off`, `once`, `emit`.
 
-- **ResultsOverlay** (`resultsoverlay.tsx`)  
-  Shows duel outcome, updates win-streak, options to share/replay/settings.
+- **rng.js**  
+  Seedable RNG: `setSeed`, `random`, `randomInt`, `getState`, `setState`.
 
-- **ShareLinkModal** (`sharelinkmodal.tsx`)  
-  Generates & copies deep-link URL for social sharing.
+### Utilities
 
-- **SettingsModal** (`settingsmodal.tsx`)  
-  Toggles sound & theme preferences.
+- **utils.js**  
+  Helpers: `deepClone`, `merge`, `isObject`, `randomChoice`, etc.
 
-- **LoadingSpinner** (`loadingspinner.tsx`)  
-  Global spinner for Suspense fallbacks & data loads.
+### React Integration
 
-### Monetization Components
+- **useBattleEngine.js**  
+  React hook that wraps core APIs into `state`, `dispatch`, `subscribe`.
 
-- **InterstitialAdManager** (`interstitialadmanager.tsx`)  
-  Asynchronously loads & displays full-screen ads.
+### Entry & Build
 
-- **AffiliateLinkBanner** (`affiliatelinkbanner.tsx`)  
-  Fetches & shows affiliate link previews post-duel.
+- **index.js**  
+  Main entry; re-exports core functions & hook.
 
-- **PremiumSkinModal** (`premiumskinmodal.tsx`)  
-  In-app purchase flow for premium card skins (Stripe integration).
+- **rollup.config.js**  
+  Bundles ESM & CJS outputs.
 
-### Utilities & Services
+### Configuration & Types
 
-- **AnalyticsService** (`analyticsservice.ts`)  
-  Structured event logging (e.g., Google Analytics, Segment).
-
-- **ErrorBoundary** (`errorboundary.tsx`)  
-  Catches runtime React errors, logs them, and displays fallback UI.
-
-### Entry Points & Config
-
-- **index.js** / **app.jsx**  
-  React DOM render & root app component bootstrap.
-
-- **package.json**  
-  NPM scripts & dependencies.
+- package.json, jest.config.js, .eslintrc.js, .prettierrc, tsconfig.json  
+- **d.ts** (TypeScript declaration file)  
+- **node.js** (Env detection for Node.js builds)
 
 ---
 
 ## Dependencies
 
-- react, react-dom  
-- react-router-dom  
-- typescript  
-- framer-motion  
-- howler  
-- stripe  
-- your-ad-sdk (e.g., Google Ad Manager)  
-- analytics provider SDK (e.g., Segment)  
-- dev: eslint, prettier, jest (optional)
+- **Runtime:** None  
+- **Peer:** React (for `useBattleEngine`)  
+- **Dev:**  
+  - rollup & plugins  
+  - jest  
+  - typescript & typedoc  
+  - eslint & prettier  
+  - semantic-release (CI/CD)  
 
 ---
 
-## Project Structure
+## Development & Build
 
+```bash
+# Clone & install
+git clone https://github.com/your-org/crookmon-game.git
+cd crookmon-game
+npm install
+
+# Build
+npm run build   # generates /dist ESM & CJS bundles
+
+# Watch
+npm run dev
+
+# Generate docs
+npm run docs
 ```
-??? public/
-?   ??? index.html
-??? src/
-?   ??? index.js
-?   ??? app.jsx
-?   ??? app.tsx
-?   ??? contexts/
-?   ?   ??? settingscontext.tsx
-?   ?   ??? duelcontext.tsx
-?   ?   ??? winstreakcontext.tsx
-?   ??? hooks/
-?   ?   ??? uselocalstorage.ts
-?   ?   ??? usequeryparams.ts
-?   ?   ??? useduellogic.ts
-?   ?   ??? useinterstitialad.ts
-?   ?   ??? useaudiomanager.ts
-?   ??? components/
-?   ?   ??? Header.tsx
-?   ?   ??? Footer.tsx
-?   ?   ??? CardPickerGrid.tsx
-?   ?   ??? CardTile.tsx
-?   ?   ??? BattleScreen.tsx
-?   ?   ??? ResultsOverlay.tsx
-?   ?   ??? ShareLinkModal.tsx
-?   ?   ??? SettingsModal.tsx
-?   ?   ??? InterstitialAdManager.tsx
-?   ?   ??? AffiliateLinkBanner.tsx
-?   ?   ??? PremiumSkinModal.tsx
-?   ?   ??? LoadingSpinner.tsx
-?   ??? services/
-?   ?   ??? analyticsservice.ts
-?   ??? ErrorBoundary.tsx
-??? package.json
+
+CI uses GitHub Actions to lint, test, build & semantic-release.
+
+---
+
+## Testing
+
+```bash
+npm test        # run Jest suite
+npm run coverage
 ```
+
+All core modules are covered with unit tests under `/__tests__/`.
 
 ---
 
 ## Contributing
 
-1. Fork the repository  
-2. Create a feature branch (`git checkout -b feature/YourFeature`)  
-3. Commit your changes (`git commit -m "Add awesome feature"`)  
-4. Push to the branch (`git push origin feature/YourFeature`)  
-5. Open a Pull Request  
+1. Fork the repo  
+2. Create a feature branch  
+3. Write tests & documentation  
+4. Submit a PR against `main`  
 
-Please adhere to the existing code style and include tests where applicable.
+Please follow the existing code style and commit message conventions.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+MIT ? [Your Name or Organization]
