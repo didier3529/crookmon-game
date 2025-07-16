@@ -9,8 +9,10 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite",
-    "dev:simple": "node dev-server.js",
+    "dev": "vite --host 0.0.0.0 --port 3001",
+    "dev:react": "vite --mode development --port 3002",
+    "dev:simple": "node simple-server.js",
+    "dev:serve": "npx serve dist/app -s -p 3000",
     "build": "rollup -c",
     "build:app": "vite build",
     "preview": "vite preview",
@@ -49,6 +51,7 @@
     }
   },
   "dependencies": {
+    "express": "^5.1.0",
     "react": ">=18",
     "react-dom": ">=18",
     "react-router-dom": "^6.8.0"
