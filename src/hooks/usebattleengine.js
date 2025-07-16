@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import initializeBattle from '../core/engine/initializebattle.js';
 
 export default function useBattleEngine(config) {
   const engineRef = useRef(null);
   const hasInitialized = useRef(false);
   const [state, setState] = useState(() => {
-    const engine = new BattleEngine(config);
+    const engine = initializeBattle(config);
     engineRef.current = engine;
     hasInitialized.current = true;
     return engine.getState();
@@ -17,11 +18,10 @@ export default function useBattleEngine(config) {
       return;
     }
     const oldEngine = engineRef.current;
-    if (oldEngine) {
-      if (typeof oldEngine.destroy === 'function') oldEngine.destroy();
-      else if (typeof oldEngine.stop === 'function') oldEngine.stop();
+    if (oldEngine && typeof oldEngine.stop === 'function') {
+      oldEngine.stop();
     }
-    const engine = new BattleEngine(config);
+    const engine = initializeBattle(config);
     engineRef.current = engine;
     setState(engine.getState());
   }, [config]);
@@ -30,15 +30,26 @@ export default function useBattleEngine(config) {
   useEffect(() => {
     const engine = engineRef.current;
     if (!engine) return;
-    let unsubscribe = () => {};
-    if (typeof engine.subscribe === 'function') {
-      const maybeUnsub = engine.subscribe((newState) => {
-        setState(newState);
-      });
-      if (typeof maybeUnsub === 'function') unsubscribe = maybeUnsub;
+
+    const update = () => setState(engine.getState());
+    const events = [
+      'roundStart',
+      'roundEnd',
+      'action',
+      'start',
+      'end',
+      'stop',
+      'reset',
+    ];
+
+    for (const evt of events) {
+      engine.on(evt, update);
     }
+
     return () => {
-      unsubscribe();
+      for (const evt of events) {
+        engine.off(evt, update);
+      }
     };
   }, [config]);
 
@@ -46,9 +57,8 @@ export default function useBattleEngine(config) {
   useEffect(() => {
     return () => {
       const engine = engineRef.current;
-      if (engine) {
-        if (typeof engine.destroy === 'function') engine.destroy();
-        else if (typeof engine.stop === 'function') engine.stop();
+      if (engine && typeof engine.stop === 'function') {
+        engine.stop();
       }
     };
   }, []);
@@ -56,16 +66,6 @@ export default function useBattleEngine(config) {
   const start = useCallback(() => {
     const engine = engineRef.current;
     if (engine && typeof engine.start === 'function') engine.start();
-  }, []);
-
-  const pause = useCallback(() => {
-    const engine = engineRef.current;
-    if (engine && typeof engine.pause === 'function') engine.pause();
-  }, []);
-
-  const resume = useCallback(() => {
-    const engine = engineRef.current;
-    if (engine && typeof engine.resume === 'function') engine.resume();
   }, []);
 
   const stop = useCallback(() => {
@@ -76,38 +76,34 @@ export default function useBattleEngine(config) {
   const reset = useCallback(
     (newConfig) => {
       const engine = engineRef.current;
-      if (engine && typeof engine.reset === 'function') {
-        engine.reset(newConfig || config);
-        if (typeof engine.getState === 'function') {
-          setState(engine.getState());
-        }
+      if (!engine) return;
+
+      if (newConfig) {
+        const newEngine = initializeBattle(newConfig);
+        engineRef.current = newEngine;
+        setState(newEngine.getState());
+      } else if (typeof engine.reset === 'function') {
+        engine.reset();
+        setState(engine.getState());
       }
     },
     [config]
   );
 
-  const triggerAction = useCallback((action) => {
+  const subscribe = useCallback((event, listener) => {
     const engine = engineRef.current;
-    if (engine && typeof engine.triggerAction === 'function') {
-      return engine.triggerAction(action);
+    if (engine && typeof engine.on === 'function') {
+      engine.on(event, listener);
+      return () => engine.off(event, listener);
     }
-  }, []);
-
-  const nextTurn = useCallback(() => {
-    const engine = engineRef.current;
-    if (engine && typeof engine.nextTurn === 'function') {
-      return engine.nextTurn();
-    }
+    return () => {};
   }, []);
 
   return {
     state,
     start,
-    pause,
-    resume,
     stop,
     reset,
-    triggerAction,
-    nextTurn,
+    subscribe,
   };
 }
