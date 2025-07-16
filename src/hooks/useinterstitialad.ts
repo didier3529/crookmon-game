@@ -1,9 +1,14 @@
+import { useCallback, useEffect, useState } from 'react';
+
 const isBrowser = typeof window !== 'undefined';
 
 export function useInterstitialAd(adUnitId: string, frequencyInput: number) {
-  const frequency = Number.isInteger(frequencyInput) && frequencyInput > 0 ? frequencyInput : 1;
+  const frequency =
+    Number.isInteger(frequencyInput) && frequencyInput > 0 ? frequencyInput : 1;
   if (frequency !== frequencyInput) {
-    console.warn(`[useInterstitialAd] frequency must be a positive integer. Defaulting to ${frequency}.`);
+    console.warn(
+      `[useInterstitialAd] frequency must be a positive integer. Defaulting to ${frequency}.`
+    );
   }
   const storageKey = `interstitial-ad-counter-${adUnitId}`;
 
@@ -39,7 +44,7 @@ export function useInterstitialAd(adUnitId: string, frequencyInput: number) {
   }, [storageKey, loadAd]);
 
   const triggerAd = useCallback(() => {
-    setCounter(prev => {
+    setCounter((prev) => {
       const next = prev + 1;
       if (isBrowser) {
         window.localStorage.setItem(storageKey, next.toString());

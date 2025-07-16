@@ -1,0 +1,419 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // ==========================================
+    // BUILD TASKS
+    // ==========================================
+    {
+      "label": "🏗️ Build Project",
+      "type": "npm",
+      "script": "build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": ["$tsc"]
+    },
+
+    {
+      "label": "📦 Build Library (Rollup)",
+      "type": "shell",
+      "command": "rollup",
+      "args": ["-c"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$tsc"]
+    },
+
+    {
+      "label": "👀 Watch Build",
+      "type": "shell",
+      "command": "rollup",
+      "args": ["-c", "--watch"],
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": {
+        "base": "$tsc-watch",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^\\s*\\[",
+          "endsPattern": "waiting for changes"
+        }
+      }
+    },
+
+    // ==========================================
+    // DEVELOPMENT TASKS
+    // ==========================================
+    {
+      "label": "🚀 Start Dev Server",
+      "type": "npm",
+      "script": "start",
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^([^\\s].*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "webpack: Compiling\\.\\.\\.",
+          "endsPattern": "webpack: (Compiled successfully|Failed to compile)"
+        }
+      }
+    },
+
+    {
+      "label": "🔧 TypeScript Check",
+      "type": "typescript",
+      "tsconfig": "tsconfig.json",
+      "option": "watch",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": "$tsc-watch"
+    },
+
+    // ==========================================
+    // TESTING TASKS
+    // ==========================================
+    {
+      "label": "🧪 Run Tests",
+      "type": "npm",
+      "script": "test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "👀 Watch Tests",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "test", "--", "--watch"],
+      "group": "test",
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "📊 Test Coverage",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "test", "--", "--coverage"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "🎯 Test Current File",
+      "type": "shell",
+      "command": "npm",
+      "args": [
+        "run",
+        "test",
+        "--",
+        "${relativeFileDirname}/${fileBasenameNoExtension}"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    // ==========================================
+    // LINTING & FORMATTING TASKS
+    // ==========================================
+    {
+      "label": "🔍 Lint Code",
+      "type": "npm",
+      "script": "lint",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$eslint-stylish"]
+    },
+
+    {
+      "label": "🔧 Fix Lint Issues",
+      "type": "shell",
+      "command": "eslint",
+      "args": [".", "--fix"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": ["$eslint-stylish"]
+    },
+
+    {
+      "label": "✨ Format Code",
+      "type": "shell",
+      "command": "prettier",
+      "args": ["--write", "**/*.{js,jsx,ts,tsx,json,md}"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    // ==========================================
+    // DOCUMENTATION TASKS
+    // ==========================================
+    {
+      "label": "📚 Preview Markdown",
+      "type": "shell",
+      "command": "code",
+      "args": ["--command", "markdown.showPreview", "${file}"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "🔍 Validate Mermaid Diagrams",
+      "type": "shell",
+      "command": "mmdc",
+      "args": ["-i", "${file}", "-o", "/tmp/test.svg"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    // ==========================================
+    // DEPENDENCY MANAGEMENT
+    // ==========================================
+    {
+      "label": "📦 Install Dependencies",
+      "type": "npm",
+      "script": "install",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "🔄 Update Dependencies",
+      "type": "shell",
+      "command": "npm",
+      "args": ["update"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "🔒 Audit Dependencies",
+      "type": "shell",
+      "command": "npm",
+      "args": ["audit"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    // ==========================================
+    // CLEANUP TASKS
+    // ==========================================
+    {
+      "label": "🧹 Clean Build",
+      "type": "shell",
+      "command": "rm",
+      "args": ["-rf", "dist", "build", ".cache"],
+      "windows": {
+        "command": "rmdir",
+        "args": ["/s", "/q", "dist", "build", ".cache"]
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "🧹 Clean All",
+      "type": "shell",
+      "command": "rm",
+      "args": ["-rf", "node_modules", "dist", "build", ".cache"],
+      "windows": {
+        "command": "rmdir",
+        "args": ["/s", "/q", "node_modules", "dist", "build", ".cache"]
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    // ==========================================
+    // BATTLE ENGINE SPECIFIC TASKS
+    // ==========================================
+    {
+      "label": "🎮 Test Battle Engine",
+      "type": "shell",
+      "command": "node",
+      "args": ["index.js"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "🤖 Test AI System",
+      "type": "shell",
+      "command": "node",
+      "args": ["generateaimove.js"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    // ==========================================
+    // COMPOUND TASKS
+    // ==========================================
+    {
+      "label": "🚀 Full Build",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "🧹 Clean Build",
+        "🔍 Lint Code",
+        "🧪 Run Tests",
+        "🏗️ Build Project"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "🔧 Dev Setup",
+      "dependsOrder": "sequence",
+      "dependsOn": ["📦 Install Dependencies", "🔍 Lint Code", "🧪 Run Tests"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

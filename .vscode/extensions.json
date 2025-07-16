@@ -1,0 +1,145 @@
+{
+  "recommendations": [
+    // ==========================================
+    // CORE DEVELOPMENT EXTENSIONS
+    // ==========================================
+
+    // TypeScript & JavaScript
+    "ms-vscode.vscode-typescript-next",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-eslint",
+    "esbenp.prettier-vscode",
+
+    // React Development
+    "dsznajder.es7-react-js-snippets",
+    "formulahendry.auto-rename-tag",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-react-refactor",
+
+    // ==========================================
+    // MARKDOWN & DOCUMENTATION
+    // ==========================================
+
+    // Markdown Support
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+    "shd101wyy.markdown-preview-enhanced",
+
+    // Mermaid Diagram Support
+    "bierner.markdown-mermaid",
+    "tomoyukim.vscode-mermaid-editor",
+    "vstirbu.vscode-mermaid-preview",
+
+    // ==========================================
+    // BUILD SYSTEM & TOOLING
+    // ==========================================
+
+    // Package Management
+    "christian-kohler.npm-intellisense",
+    "mskelton.npm-outdated",
+    "eg2.vscode-npm-script",
+
+    // Build Tools
+    "rollup.rollup-plugin-visualizer",
+
+    // ==========================================
+    // CODE QUALITY & TESTING
+    // ==========================================
+
+    // Testing
+    "orta.vscode-jest",
+    "firsttris.vscode-jest-runner",
+    "kavod-io.vscode-jest-test-adapter",
+
+    // Code Quality
+    "streetsidesoftware.code-spell-checker",
+    "usernamehw.errorlens",
+    "gruntfuggly.todo-tree",
+    "oderwat.indent-rainbow",
+
+    // ==========================================
+    // GIT & VERSION CONTROL
+    // ==========================================
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    "donjayamanne.githistory",
+    "github.vscode-github-actions",
+
+    // ==========================================
+    // PRODUCTIVITY & NAVIGATION
+    // ==========================================
+
+    // File Management
+    "alefragnani.project-manager",
+    "alefragnani.bookmarks",
+    "christian-kohler.path-intellisense",
+
+    // Code Navigation
+    "ms-vscode.vscode-CodeTour",
+    "wayou.vscode-todo-highlight",
+    "aaron-bond.better-comments",
+
+    // ==========================================
+    // UI & THEMING
+    // ==========================================
+
+    // Themes & Icons
+    "pkief.material-icon-theme",
+    "github.github-vscode-theme",
+    "zhuangtongfa.material-theme",
+
+    // Bracket Highlighting
+    "coenraads.bracket-pair-colorizer-2",
+
+    // ==========================================
+    // DEVELOPMENT UTILITIES
+    // ==========================================
+
+    // Auto Completion & Snippets
+    "visualstudioexptteam.vscodeintellicode",
+    "ms-vscode.vscode-tabnine",
+
+    // Code Formatting
+    "redhat.vscode-yaml",
+    "ms-vscode.vscode-json",
+
+    // Performance & Debugging
+    "ms-vscode.vscode-js-debug",
+    "firefox-devtools.vscode-firefox-debug",
+    "ms-vscode.vscode-chrome-debug-core",
+
+    // ==========================================
+    // WEB DEVELOPMENT SPECIFIC
+    // ==========================================
+
+    // CSS & Styling
+    "bradlc.vscode-tailwindcss",
+    "zignd.html-css-class-completion",
+    "pranaygp.vscode-css-peek",
+
+    // HTML
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-rename-tag",
+
+    // ==========================================
+    // SECURITY & VALIDATION
+    // ==========================================
+    "snyk-security.snyk-vulnerability-scanner",
+
+    // ==========================================
+    // DOCUMENTATION GENERATION
+    // ==========================================
+    "stevencl.addDocComments",
+    "mintlify.document"
+  ],
+
+  // ==========================================
+  // UNWANTED EXTENSIONS
+  // ==========================================
+  "unwantedRecommendations": [
+    // Deprecated or conflicting extensions
+    "ms-vscode.vscode-typescript",
+    "hookyqr.beautify",
+    "dbaeumer.jshint"
+  ]
+}

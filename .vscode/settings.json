@@ -1,0 +1,286 @@
+{
+  // ==========================================
+  // TYPESCRIPT & JAVASCRIPT CONFIGURATION
+  // ==========================================
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.inlayHints.parameterNames.enabled": "all",
+  "typescript.inlayHints.variableTypes.enabled": true,
+  "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+  "javascript.suggest.autoImports": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+
+  // ==========================================
+  // REACT & JSX CONFIGURATION
+  // ==========================================
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact"
+  },
+  "emmet.triggerExpansionOnTab": true,
+  "reactSnippets.settings.importReactOnTop": false,
+  "reactSnippets.settings.prettierEnabled": true,
+
+  // ==========================================
+  // MARKDOWN & DOCUMENTATION
+  // ==========================================
+  "markdown.preview.fontSize": 14,
+  "markdown.preview.lineHeight": 1.6,
+  "markdown.preview.fontFamily": "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+  "markdown.preview.scrollPreviewWithEditor": true,
+  "markdown.preview.markEditorSelection": true,
+  "markdown.preview.scrollEditorWithPreview": true,
+  "markdown.extension.toc.updateOnSave": true,
+  "markdown.extension.preview.autoShowPreviewToSide": false,
+  "markdown.extension.orderedList.marker": "ordered",
+
+  // Mermaid Diagram Support
+  "mermaid.theme": "default",
+  "markdown-mermaid.lightModeTheme": "default",
+  "markdown-mermaid.darkModeTheme": "dark",
+
+  // ==========================================
+  // CODE FORMATTING & LINTING
+  // ==========================================
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit",
+    "source.removeUnusedImports": "explicit"
+  },
+
+  // ESLint Configuration
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.workingDirectories": ["."],
+  "eslint.codeAction.showDocumentation": {
+    "enable": true
+  },
+
+  // Prettier Configuration
+  "prettier.semi": true,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "es5",
+  "prettier.tabWidth": 2,
+  "prettier.useTabs": false,
+
+  // ==========================================
+  // FILE ASSOCIATIONS & LANGUAGE SUPPORT
+  // ==========================================
+  "files.associations": {
+    "*.tsx": "typescriptreact",
+    "*.ts": "typescript",
+    "*.js": "javascript",
+    "*.jsx": "javascriptreact",
+    "*.md": "markdown",
+    "rollup.config.js": "javascript",
+    "*.config.js": "javascript",
+    "*.config.ts": "typescript"
+  },
+
+  // ==========================================
+  // EDITOR BEHAVIOR & UI
+  // ==========================================
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": true,
+  "editor.wordWrap": "on",
+  "editor.lineNumbers": "on",
+  "editor.rulers": [80, 120],
+  "editor.minimap.enabled": true,
+  "editor.minimap.maxColumn": 120,
+  "editor.suggestSelection": "first",
+  "editor.acceptSuggestionOnCommitCharacter": false,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+
+  // Bracket Pair Colorization
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+
+  // ==========================================
+  // INTELLISENSE & AUTOCOMPLETE
+  // ==========================================
+  "editor.parameterHints.enabled": true,
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "editor.suggest.localityBonus": true,
+  "editor.suggest.shareSuggestSelections": true,
+  "editor.suggestOnTriggerCharacters": true,
+  "editor.wordBasedSuggestions": "matchingDocuments",
+
+  // ==========================================
+  // WORKSPACE & FILE EXPLORER
+  // ==========================================
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmDelete": false,
+  "explorer.sortOrder": "type",
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.js, ${capture}.d.ts, ${capture}.js.map",
+    "*.tsx": "${capture}.js, ${capture}.jsx",
+    "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml",
+    "tsconfig.json": "tsconfig.*.json",
+    "rollup.config.js": "rollup.config.*.js",
+    "README.md": "TECHNICAL_ARCHITECTURE.md, CHANGELOG.md, CONTRIBUTING.md"
+  },
+
+  // ==========================================
+  // SEARCH & FIND
+  // ==========================================
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
+  "search.useIgnoreFiles": true,
+  "search.smartCase": true,
+
+  // ==========================================
+  // GIT INTEGRATION
+  // ==========================================
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "git.autofetch": true,
+  "git.decorations.enabled": true,
+  "scm.diffDecorations": "all",
+  "scm.alwaysShowProviders": true,
+
+  // ==========================================
+  // TERMINAL CONFIGURATION
+  // ==========================================
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.copyOnSelection": true,
+
+  // ==========================================
+  // DEBUGGING CONFIGURATION
+  // ==========================================
+  "debug.inlineValues": "auto",
+  "debug.openDebug": "openOnDebugBreak",
+  "debug.showBreakpointsInOverviewRuler": true,
+
+  // ==========================================
+  // PERFORMANCE & MEMORY
+  // ==========================================
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/.git/**": true
+  },
+  "typescript.tsc.autoDetect": "on",
+  "typescript.preferences.useLabelDetailsInCompletionEntries": true,
+  "typescript.suggest.enabled": true,
+  "typescript.validate.enable": true,
+
+  // ==========================================
+  // EXTENSIONS RECOMMENDATIONS
+  // ==========================================
+  "extensions.ignoreRecommendations": false,
+
+  // ==========================================
+  // PROJECT-SPECIFIC SETTINGS
+  // ==========================================
+
+  // React Hooks Linting
+  "editor.codeActionsOnSaveTimeout": 3000,
+
+  // Component naming conventions
+  "typescript.preferences.includeCompletionsForModuleExports": true,
+  "typescript.preferences.includeCompletionsWithSnippetText": true,
+
+  // Battle Engine specific settings
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
+
+  // ==========================================
+  // CODE LENS & INLAY HINTS
+  // ==========================================
+  "typescript.referencesCodeLens.enabled": true,
+  "typescript.referencesCodeLens.showOnAllFunctions": true,
+  "typescript.implementationsCodeLens.enabled": true,
+  "editor.inlayHints.enabled": "on",
+
+  // ==========================================
+  // THEME & APPEARANCE FOR DOCUMENTATION
+  // ==========================================
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.startupEditor": "readme",
+  "workbench.tree.indent": 20,
+  "workbench.list.smoothScrolling": true,
+
+  // ==========================================
+  // AUTO-SAVE & FILE MANAGEMENT
+  // ==========================================
+  "files.autoSave": "onFocusChange",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+
+  // ==========================================
+  // LANGUAGE SPECIFIC OVERRIDES
+  // ==========================================
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll.eslint": "explicit"
+    }
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll.eslint": "explicit"
+    }
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll.eslint": "explicit"
+    }
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll.eslint": "explicit"
+    }
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+    "editor.wordWrap": "on",
+    "editor.lineNumbers": "off",
+    "editor.rulers": [],
+    "editor.minimap.enabled": false
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

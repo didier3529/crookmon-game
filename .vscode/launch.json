@@ -1,0 +1,192 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // ==========================================
+    // REACT APPLICATION DEBUGGING
+    // ==========================================
+    {
+      "name": "🚀 Launch React App",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMaps": true,
+      "smartStep": true,
+      "skipFiles": ["**/node_modules/**", "**/dist/**"],
+      "preLaunchTask": "npm: start",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+
+    {
+      "name": "🌐 Attach to Chrome",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9222,
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMaps": true,
+      "smartStep": true,
+      "skipFiles": ["**/node_modules/**", "**/dist/**"]
+    },
+
+    // ==========================================
+    // BATTLE ENGINE DEBUGGING (NODE.JS)
+    // ==========================================
+    {
+      "name": "🎮 Debug Battle Engine",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/index.js",
+      "args": [],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "sourceMaps": true,
+      "smartStep": true,
+      "skipFiles": ["**/node_modules/**", "**/dist/**"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "outputCapture": "std"
+    },
+
+    {
+      "name": "🔧 Debug Battle Engine with Args",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/index.js",
+      "args": ["--seed", "12345", "--debug"],
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": "battle:*"
+      },
+      "sourceMaps": true,
+      "smartStep": true,
+      "skipFiles": ["**/node_modules/**"],
+      "console": "integratedTerminal"
+    },
+
+    // ==========================================
+    // TESTING CONFIGURATIONS
+    // ==========================================
+    {
+      "name": "🧪 Debug Jest Tests",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": [
+        "--runInBand",
+        "--no-cache",
+        "--watchAll=false",
+        "--coverage=false"
+      ],
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "sourceMaps": true,
+      "smartStep": true,
+      "skipFiles": ["**/node_modules/**"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      }
+    },
+
+    {
+      "name": "🎯 Debug Current Jest Test",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": [
+        "--runInBand",
+        "--no-cache",
+        "--no-coverage",
+        "${relativeFileDirname}/${fileBasenameNoExtension}"
+      ],
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "sourceMaps": true,
+      "smartStep": true,
+      "skipFiles": ["**/node_modules/**"],
+      "console": "integratedTerminal",
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      }
+    },
+
+    // ==========================================
+    // BUILD SYSTEM DEBUGGING
+    // ==========================================
+    {
+      "name": "📦 Debug Rollup Build",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/rollup",
+      "args": ["-c", "--watch"],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "sourceMaps": true,
+      "smartStep": true,
+      "skipFiles": ["**/node_modules/**"],
+      "console": "integratedTerminal",
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/rollup/dist/bin/rollup"
+      }
+    },
+
+    // ==========================================
+    // AI SYSTEM DEBUGGING
+    // ==========================================
+    {
+      "name": "🤖 Debug AI Move Generation",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/generateaimove.js",
+      "args": [],
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": "ai:*"
+      },
+      "sourceMaps": true,
+      "smartStep": true,
+      "skipFiles": ["**/node_modules/**"],
+      "console": "integratedTerminal"
+    },
+
+    // ==========================================
+    // ATTACH CONFIGURATIONS
+    // ==========================================
+    {
+      "name": "🔗 Attach to Node Process",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "skipFiles": ["**/node_modules/**"],
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "${workspaceFolder}"
+    },
+
+    // ==========================================
+    // COMPOUND CONFIGURATIONS
+    // ==========================================
+    {
+      "name": "🚀 Launch Full Stack",
+      "type": "compound",
+      "configurations": ["🎮 Debug Battle Engine", "🚀 Launch React App"],
+      "stopAll": true
+    }
+  ],
+
+  // ==========================================
+  // GLOBAL DEBUG SETTINGS
+  // ==========================================
+  "compounds": [
+    {
+      "name": "🧪 Debug Tests & App",
+      "configurations": ["🧪 Debug Jest Tests", "🚀 Launch React App"],
+      "stopAll": true
+    }
+  ]
+}
