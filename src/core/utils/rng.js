@@ -12,6 +12,85 @@ function rotl(x, k) {
   return ((x << k) | (x >>> (32 - k))) >>> 0;
 }
 
+// RNG class for creating independent instances
+export class RNG {
+  constructor(seed = Date.now()) {
+    this.state = new Uint32Array(4);
+    this.setSeed(seed);
+  }
+
+  setSeed(seed) {
+    let s = seed >>> 0;
+    for (let i = 0; i < 4; i++) {
+      s = splitmix32(s);
+      this.state[i] = s;
+    }
+  }
+
+  getState() {
+    return Array.from(this.state);
+  }
+
+  setState(state) {
+    if (!Array.isArray(state) || state.length !== 4) {
+      throw new Error('setState: state must be an array of 4 uint32 values');
+    }
+    for (let i = 0; i < 4; i++) {
+      const v = state[i];
+      if (!Number.isInteger(v) || v < 0 || v > 0xffffffff) {
+        throw new Error('setState: state[' + i + '] must be a uint32 value');
+      }
+      this.state[i] = v >>> 0;
+    }
+  }
+
+  nextUint32() {
+    const s0 = this.state[0],
+      s1 = this.state[1],
+      s2 = this.state[2],
+      s3 = this.state[3];
+    const result = rotl(Math.imul(s1, 5), 7);
+    const t = (s1 << 9) >>> 0;
+    this.state[2] = s2 ^ s0;
+    this.state[3] = s3 ^ s1;
+    this.state[1] = s1 ^ this.state[2];
+    this.state[0] = s0 ^ this.state[3];
+    this.state[2] ^= t;
+    this.state[3] = rotl(this.state[3], 11);
+    return result >>> 0;
+  }
+
+  random() {
+    return this.nextUint32() / 4294967296;
+  }
+
+  randomInt(min, max) {
+    if (!Number.isInteger(min) || !Number.isInteger(max)) {
+      throw new Error('randomInt: min and max must be integers');
+    }
+    if (max < min) {
+      throw new Error('randomInt: max must be >= min');
+    }
+    const range = max - min + 1;
+    const uRange = range >>> 0;
+    if (uRange === 0) {
+      throw new Error('randomInt: range must be between 1 and 2^32 inclusive');
+    }
+    const threshold = 4294967296 - (4294967296 % uRange);
+    let r;
+    do {
+      r = this.nextUint32();
+    } while (r >= threshold);
+    return min + (r % uRange);
+  }
+}
+
+// Factory function to create new RNG instances
+export function createRNG(seed = Date.now()) {
+  return new RNG(seed);
+}
+
+// Global instance functions (backward compatibility)
 export function setSeed(seed) {
   let s = seed >>> 0;
   for (let i = 0; i < 4; i++) {
@@ -30,7 +109,7 @@ export function setState(state) {
   }
   for (let i = 0; i < 4; i++) {
     const v = state[i];
-    if (!Number.isInteger(v) || v < 0 || v > 0xFFFFFFFF) {
+    if (!Number.isInteger(v) || v < 0 || v > 0xffffffff) {
       throw new Error('setState: state[' + i + '] must be a uint32 value');
     }
     _state[i] = v >>> 0;
@@ -39,9 +118,9 @@ export function setState(state) {
 
 export function nextUint32() {
   const s0 = _state[0],
-        s1 = _state[1],
-        s2 = _state[2],
-        s3 = _state[3];
+    s1 = _state[1],
+    s2 = _state[2],
+    s3 = _state[3];
   const result = rotl(Math.imul(s1, 5), 7);
   const t = (s1 << 9) >>> 0;
   _state[2] = s2 ^ s0;
